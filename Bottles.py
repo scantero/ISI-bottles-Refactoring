@@ -9,46 +9,69 @@ class Bottles:
             o += "\n" + self.verse (i)
         return o
 
-    def verse(self, number=None):
-        c = ContainerNumber(number)
-        c_ant = ContainerNumber(number-1)
-        return "{0} of beer on the wall, ".format(c.upper_first_letter(c.set_of_drinks()) +\
-        "{0} of beer.\n".format(c.set_of_drinks()) +\
-        c.next_action() +\
-        "{0} of beer on the wall.\n".format(c_ant.set_of_drinks())
-
-class ContainerNumber:
-
-    def __init__(self, containers):
-        self.containers = containers
-
-    def set_of_drinks(self):
-        return "{0} {1}".format(self.units_left(self.containers), c.container(self.containers))
-
-    def units_left(self):
-        if self.containers == 0:
-            return "no more"
-        elif self.containers == -1:
-            return str(99)
+    def verse(self, number = None):
+        if number == 0:
+            bottle_number = BottleNumber0(number)
+            next_bottle_number = BottleNumber0(bottle_number.successor())
+        elif number == 1:
+            bottle_number = BottleNumber1(number)
+            next_bottle_number = BottleNumber1(bottle_number.successor())
         else:
-            return str(self.containers)
+            bottle_number = BottleNumber(number)
+            next_bottle_number = BottleNumber(bottle_number.successor())
+        result = \
+            "{0} {1} of beer on the wall, ".format(bottle_number.quantity().capitalize(), bottle_number.container()) + \
+            "{0} {1} of beer.\n".format(bottle_number.quantity(), bottle_number.container()) + \
+            "{0}, ".format(bottle_number.action()) + \
+            "{0} {1} of beer on the wall.\n".format(next_bottle_number.quantity(), next_bottle_number.container())
+
+        return result
+
+class BottleNumber:
+    def __init__(self, number):
+        self.number = number
 
     def container(self):
-        if self.containers == 1:
+        if self.number == 1:
             return "bottle"
         else:
             return "bottles"
 
-    def next_action(self):
-        if self.containers == 0:
-            return "Go to the store and buy some more, "
-        elif self.containers == 1:
-            return "Take it down and pass it around, "
-        else:
-            return "Take one down and pass it around, "
+    def quantity(self):
+        return str(self.number)
 
-    def upper_first_letter(self, cadena):
-        letra = cadena[0]
-        cadena = cadena[1:]
-        letra = letra.upper()
-        return letra + cadena
+    def action(self):
+        return "Take {0} down and pass it around".format(self.pronoun())
+
+    def pronoun(self):
+        return "one"
+
+    def successor(self):
+        return self.number - 1
+
+class BottleNumber1(BottleNumber):
+    def quantity(self):
+        if self.number == 0:
+            return "no more"
+        else:
+            return str(self.number)
+
+    def pronoun(self):
+        return "it"
+
+
+class BottleNumber0(BottleNumber):
+    def container(self):
+        return "bottles"
+
+    def quantity(self):
+        if self.number == 0:
+            return "no more"
+        else:
+            return str(self.number)
+
+    def action(self):
+        return "Go to the store and buy some more"
+
+    def successor(self):
+        return 99
