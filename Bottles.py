@@ -10,15 +10,8 @@ class Bottles:
         return o
 
     def verse(self, number = None):
-        if number == 0:
-            bottle_number = BottleNumber0(number)
-            next_bottle_number = BottleNumber0(bottle_number.successor())
-        elif number == 1:
-            bottle_number = BottleNumber1(number)
-            next_bottle_number = BottleNumber1(bottle_number.successor())
-        else:
-            bottle_number = BottleNumber(number)
-            next_bottle_number = BottleNumber(bottle_number.successor())
+        bottle_number = self.bottleNumberFactory(number)
+        next_bottle_number = self.bottleNumberFactory(bottle_number.successor())
         result = \
             "{0} {1} of beer on the wall, ".format(bottle_number.quantity().capitalize(), bottle_number.container()) + \
             "{0} {1} of beer.\n".format(bottle_number.quantity(), bottle_number.container()) + \
@@ -27,15 +20,22 @@ class Bottles:
 
         return result
 
+    def bottleNumberFactory(self, number):
+        if number == 0:
+            return BottleZero(number)
+        elif number == 1:
+            return BottleOne(number)
+        elif number == 6:
+            return BottleSixPack(number)
+        else:
+            return BottleNumber(number)
+
 class BottleNumber:
     def __init__(self, number):
         self.number = number
 
     def container(self):
-        if self.number == 1:
-            return "bottle"
-        else:
-            return "bottles"
+        return "bottles"
 
     def quantity(self):
         return str(self.number)
@@ -49,29 +49,28 @@ class BottleNumber:
     def successor(self):
         return self.number - 1
 
-class BottleNumber1(BottleNumber):
-    def quantity(self):
-        if self.number == 0:
-            return "no more"
-        else:
-            return str(self.number)
+
+class BottleOne(BottleNumber):
+    def container(self):
+        return "bottle"
 
     def pronoun(self):
         return "it"
 
 
-class BottleNumber0(BottleNumber):
-    def container(self):
-        return "bottles"
-
+class BottleZero(BottleNumber):
     def quantity(self):
-        if self.number == 0:
-            return "no more"
-        else:
-            return str(self.number)
+        return "no more"
 
     def action(self):
         return "Go to the store and buy some more"
 
     def successor(self):
         return 99
+
+class BottleSixPack(BottleNumber):
+    def container(self):
+        return "six-pack"
+
+    def quantity(self):
+        return str(1)
