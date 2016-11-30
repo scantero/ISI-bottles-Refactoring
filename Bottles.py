@@ -9,7 +9,7 @@ class Bottles:
             o += "\n" + self.verse (i)
         return o
 
-    def number_to_string(self, number):
+    def units_left(self, number):
         if number == 0:
             return "no more"
         elif number == -1:
@@ -23,7 +23,7 @@ class Bottles:
         else:
             return "bottles"
 
-    def begin_2nd_line(self, number):
+    def next_action(self, number):
         if number == 0:
             return "Go to the store and buy some more, "
         elif number == 1:
@@ -38,7 +38,7 @@ class Bottles:
         return letra + cadena
 
     def verse(self, number = None):
-        return "{0} {1} of beer on the wall, ".format(self.upper_first_letter(self.number_to_string(number)), self.container(number)) +\
-        "{0} {1} of beer.\n".format(self.number_to_string(number), self.container(number)) +\
-        self.begin_2nd_line(number) +\
-        "{0} {1} of beer on the wall.\n".format(self.number_to_string(number-1), self.container(number-1))
+        return "{0} {1} of beer on the wall, ".format(self.upper_first_letter(self.units_left(number)), self.container(number)) +\
+        "{0} {1} of beer.\n".format(self.units_left(number), self.container(number)) +\
+        self.next_action(number) +\
+        "{0} {1} of beer on the wall.\n".format(self.units_left(number-1), self.container(number-1))
